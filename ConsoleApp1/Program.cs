@@ -21,8 +21,28 @@ public class BookRepository
         _connection = connection;
     }
 
-    public void Create(Book book)
+    public void Create()
     {
+        Console.WriteLine("Enter book title: ");
+        string title = Console.ReadLine();
+        Console.WriteLine("Enter book ISBN: ");
+        string isbn = Console.ReadLine();
+        Console.WriteLine("Enter book price: ");
+        int price = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("Enter book author: ");
+        string author = Console.ReadLine();
+        Console.WriteLine("Enter book publisher: ");
+        string publisher = Console.ReadLine();
+
+        Book book = new Book() 
+        {
+            Title = title,
+            ISBN = isbn,
+            Price = price,
+            Author = author,
+            Publisher = publisher
+        };
+
         _connection.Open();
         string query = "INSERT INTO bookinfo (BookTitle, ISBN, Price, AuthorName, PublisherName) VALUES (@title, @isbn, @price, @author, @publisher)";
         using MySqlCommand cmd = new MySqlCommand(query, _connection);
@@ -58,20 +78,61 @@ public class BookRepository
         return books;
     }
 
-    public void Update(Book book)
+    public void Update()
     {
+        Console.WriteLine("Enter from the list below the ID of the book to be UPDATED:\n");
+
+        List<Book> books = Read();
+        foreach (var book in books)
+        {
+            Console.WriteLine($"{book.Id} - {book.Title}");
+        }
+
+        Console.WriteLine();
+
+        Console.WriteLine("Enter book ID: ");
+        int id = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("Enter book title: ");
+        string title = Console.ReadLine();
+        Console.WriteLine("Enter book author: ");
+        string author = Console.ReadLine();
+        Console.WriteLine("Enter book publisher: ");
+        string publisher = Console.ReadLine();
+        Console.WriteLine("Enter book price: ");
+        int price = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("Enter book ISBN: ");
+        string isbn = Console.ReadLine();
+
         _connection.Open();
-        string query = "UPDATE bookinfo SET Price = @price WHERE id = @id";
-        int priceUpdate = 13;
+
+        string query = "UPDATE bookinfo SET BookTitle = @title, ISBN = @isbn, AuthorName = @author, PublisherName = @publisher, Price = @price WHERE id = @id";
+
         using MySqlCommand cmd = new MySqlCommand(query, _connection);
-        cmd.Parameters.AddWithValue("@id", book.Id);
-        cmd.Parameters.AddWithValue("@price", priceUpdate);
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@title", title);
+        cmd.Parameters.AddWithValue("@isbn", isbn);
+        cmd.Parameters.AddWithValue("@price", price);
+        cmd.Parameters.AddWithValue("@author", author);
+        cmd.Parameters.AddWithValue("@publisher", publisher);
+
         cmd.ExecuteNonQuery();
         _connection.Close();
     }
 
-    public void Delete(int bookId)
+    public void Delete()
     {
+        Console.WriteLine("Enter from the list below the ID of the book to be DELETED:\n");
+
+        List<Book> books = Read();
+        foreach (var book in books)
+        {
+            Console.WriteLine($"{book.Id} - {book.Title}");
+        }
+
+        Console.WriteLine();
+
+        int bookId = Convert.ToInt32(Console.ReadLine());
+
         _connection.Open();
         string query = "DELETE FROM bookinfo WHERE id = @id";
         using MySqlCommand cmd = new MySqlCommand(query, _connection);
@@ -163,129 +224,11 @@ class Program
         using MySqlConnection connection = new MySqlConnection("Server=localhost;Database=library;User=root;Password=");
         var bookRepo = new BookRepository(connection);
 
-        Book newBook = new Book
-        {
-            Title = "To Kill a Mockingbird",
-            ISBN = "978-0-06-112008-4",
-            Price = 11,
-            Author = "Harper Lee",
-            Publisher = "HarperCollins"
-        };
+        //bookRepo.Create();
 
-        Book newBook2 = new Book
-        {
-            Title = "1984",
-            ISBN = "978-0-452-28423-4",
-            Price = 12,
-            Author = "George Orwell",
-            Publisher = "Signet Classics"
-        };
+        bookRepo.Update();
 
-        Book newBook3 = new Book
-        {
-            Title = "The Great Gatsby",
-            ISBN = "978-0-7432-7356-5",
-            Price = 10,
-            Author = "F. Scott Fitzgerald",
-            Publisher = "Scribner"
-        };
-        
-
-        Book newBook4 = new Book
-        {
-            Title = "Pride and Prejudice",
-            ISBN = "978-0-19-953556-9",
-            Price = 15,
-            Author = "Jane Austen",
-            Publisher = "Oxford University Press"
-        };
-
-        Book newBook5 = new Book
-        {
-            Title = "Harry Potter and the Sorcerer's Stone",
-            ISBN = "978-0-545-01022-5",
-            Price = 15,
-            Author = "J.K. Rowling",
-            Publisher = "Scholastic"
-        };
-
-        // New book 4
-        Book newBook11 = new Book
-        {
-            Title = "The Catcher in the Rye",
-            ISBN = "978-0-316-76948-0",
-            Price = 12,
-            Author = "J.D. Salinger",
-            Publisher = "Back Bay Books"
-        };
-
-
-        // New book 6
-        Book newBook6 = new Book
-        {
-            Title = "The Hobbit",
-            ISBN = "978-0-261-10295-2",
-            Price = 13,
-            Author = "J.R.R. Tolkien",
-            Publisher = "HarperCollins"
-        };
-
-        // New book 7
-        Book newBook7 = new Book
-        {
-            Title = "The Hunger Games",
-            ISBN = "978-0-439-02351-1",
-            Price = 11,
-            Author = "Suzanne Collins",
-            Publisher = "Scholastic"
-        };
-
-        // New book 8
-        Book newBook8 = new Book
-        {
-            Title = "Moby-Dick",
-            ISBN = "978-0-553-21311-3",
-            Price = 14,
-            Author = "Herman Melville",
-            Publisher = "Bantam Classics"
-        };
-
-        // New book 9
-        Book newBook9 = new Book
-        {
-            Title = "The Lord of the Rings: The Fellowship of the Ring",
-            ISBN = "978-0-345-33970-6",
-            Price = 16,
-            Author = "J.R.R. Tolkien",
-            Publisher = "Del Rey"
-        };
-
-        // New book 10
-        Book newBook10 = new Book
-        {
-            Title = "Fahrenheit 451",
-            ISBN = "978-1-4516-7331-9",
-            Price = 10,
-            Author = "Ray Bradbury",
-            Publisher = "Simon & Schuster"
-        };
-
-        //bookRepo.Create(newBook);
-        //bookRepo.Create(newBook3);
-        //bookRepo.Create(newBook4);
-        bookRepo.Create(newBook5);
-        bookRepo.Create(newBook6);
-        bookRepo.Create(newBook7);
-        bookRepo.Create(newBook8);
-        bookRepo.Create(newBook9);
-        bookRepo.Create(newBook10);
-        bookRepo.Create(newBook11);
-
-        //bookRepo.Update(books[0]);
-
-        //bookRepo.Delete(1);
-        //bookRepo.Delete(3);
-        //bookRepo.Delete(8);
+        //bookRepo.Delete();
 
 
         //Console.WriteLine($"\n\nPrint the list of books:\n");
