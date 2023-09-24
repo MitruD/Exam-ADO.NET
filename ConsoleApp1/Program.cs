@@ -74,6 +74,12 @@ public class BookRepository
                 Publisher = reader.GetString("PublisherName")
             });
         }
+
+        foreach (var book in books)
+        {
+            Console.WriteLine($"{book.Id} - \"{book.Title}\" written by {book.Author}, published by {book.Publisher} - ISBN: {book.ISBN} - Price: {book.Price}$");
+        }
+
         _connection.Close();
         return books;
     }
@@ -123,11 +129,7 @@ public class BookRepository
     {
         Console.WriteLine("Enter from the list below the ID of the book to be DELETED:\n");
 
-        List<Book> books = Read();
-        foreach (var book in books)
-        {
-            Console.WriteLine($"{book.Id} - {book.Title}");
-        }
+        Read();
 
         Console.WriteLine();
 
@@ -226,43 +228,49 @@ class Program
 
         //bookRepo.Create();
 
-        bookRepo.Update();
+        //bookRepo.Update();
 
-        //bookRepo.Delete();
+        bookRepo.Delete();
 
-
-        //Console.WriteLine($"\n\nPrint the list of books:\n");
-
-        //List<Book> books = bookRepo.Read();
-        //foreach (var book in books)
         //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}");
-        //}
+        //    Console.WriteLine($"\n\nThe list of books:\n");
 
-        //Console.WriteLine($"\n\nSearch:\n");
+        //    //bookRepo.Read();
+        //    //}
 
 
-        //List<Book> booksByAuthor = bookRepo.SearchBooksBy("Harper Lee");
-        //foreach (var book in booksByAuthor)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}");
-        //}
+            //Console.WriteLine($"\n\nPrint the list of books:\n");
 
-        //Console.WriteLine($"\n\nSort:\n");
+            //List<Book> books = bookRepo.Read();
+            //foreach (var book in books)
+            //{
+            //    Console.WriteLine($"{book.Title} by {book.Author}");
+            //}
 
-        //List<Book> sortByTitle = bookRepo.SortedBy();
-        //foreach (var book in sortByTitle)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}: {book.Price}$");
-        //}
+            //Console.WriteLine($"\n\nSearch:\n");
 
-        //int byPrice = 11;
-        //Console.WriteLine($"\n\nFilter by price: {byPrice}$\n");
 
-        //List<Book> affordableBooks = bookRepo.FilterBy(11);
-        //foreach (var book in affordableBooks)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}");
-        //}
+            //List<Book> booksByAuthor = bookRepo.SearchBooksBy("Harper Lee");
+            //foreach (var book in booksByAuthor)
+            //{
+            //    Console.WriteLine($"{book.Title} by {book.Author}");
+            //}
+
+            //Console.WriteLine($"\n\nSort:\n");
+
+            //List<Book> sortByTitle = bookRepo.SortedBy();
+            //foreach (var book in sortByTitle)
+            //{
+            //    Console.WriteLine($"{book.Title} by {book.Author}: {book.Price}$");
+            //}
+
+            //int byPrice = 11;
+            //Console.WriteLine($"\n\nFilter by price: {byPrice}$\n");
+
+            //List<Book> affordableBooks = bookRepo.FilterBy(11);
+            //foreach (var book in affordableBooks)
+            //{
+            //    Console.WriteLine($"{book.Title} by {book.Author}");
+            //}
+        }
     }
-}
