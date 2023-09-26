@@ -217,8 +217,10 @@ public class BookRepository
         return books;
     }
 
-    public List<Book> FilterBy(int maxPrice)
+    public List<Book> FilterPriceNotHigherThan()
     {
+        int maxPrice = Convert.ToInt32(Console.ReadLine());
+
         _connection.Open();
         string query = "SELECT * FROM bookinfo WHERE Price <= @maxPrice";
         using MySqlCommand cmd = new MySqlCommand(query, _connection);
@@ -255,7 +257,7 @@ class Program
 
         while (optionMenu >= 1 && optionMenu <= 6)
         {
-            Console.WriteLine("\n1.Read\n2.Create\n3.Update\n4.Delete\n5.Search by author\n6.Sort by price\n7.Filter by price\n");
+            Console.WriteLine("\n1.Read\n2.Create\n3.Update\n4.Delete\n5.Search by author\n6.Sort by price\n7.Filter: Price equal/lower than ...\n");
             optionMenu = Convert.ToInt32(Console.ReadLine());
 
             switch (optionMenu)
@@ -283,34 +285,25 @@ class Program
                     break;
                 case 6:
                     Console.WriteLine("Sort by price. Enter: 1 - Asc, 2 - Desc");
-                    List<Book> sortByTitle = bookRepo.SortedByPrice();
-                    foreach (var book in sortByTitle)
+                    List<Book> sortByPrice = bookRepo.SortedByPrice();
+                    foreach (var book in sortByPrice)
                     {
                         Console.WriteLine($"{book.Price}$ - \"{book.Title}\" by {book.Author}.");
                     }
                     break;
-                //case 7:
-                //    Console.WriteLine("Sort by price");
-                //    SortByPrice();
-                //    break;
+                case 7:
+                    Console.WriteLine("\nEnter the Max Price:\n");
+                    List<Book> affordableBooks = bookRepo.FilterPriceNotHigherThan();
+                    foreach (var book in affordableBooks)
+                    {
+                        Console.WriteLine($"{book.Price}$ - \"{book.Title}\" by {book.Author}.");
+                    }
+                    break;
                 default:
                     Console.WriteLine("Close");
                     break;
             }
 
         }
-
-
-
-      
-
-        //int byPrice = 11;
-        //Console.WriteLine($"\n\nFilter by price: {byPrice}$\n");
-
-        //List<Book> affordableBooks = bookRepo.FilterBy(11);
-        //foreach (var book in affordableBooks)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}");
-        //}
     }
 }
