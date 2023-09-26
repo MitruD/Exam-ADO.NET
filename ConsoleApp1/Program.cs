@@ -56,6 +56,20 @@ public class BookRepository
         _connection.Close();
     }
 
+    public void Create(Book book)
+    {
+        _connection.Open();
+        string query = "INSERT INTO bookinfo (BookTitle, ISBN, Price, AuthorName, PublisherName) VALUES (@title, @isbn, @price, @author, @publisher)";
+        using MySqlCommand cmd = new MySqlCommand(query, _connection);
+        cmd.Parameters.AddWithValue("@title", book.Title);
+        cmd.Parameters.AddWithValue("@isbn", book.ISBN);
+        cmd.Parameters.AddWithValue("@price", book.Price);
+        cmd.Parameters.AddWithValue("@author", book.Author);
+        cmd.Parameters.AddWithValue("@publisher", book.Publisher);
+        cmd.ExecuteNonQuery();
+        _connection.Close();
+    }
+
     public List<Book> Read()
     {
         _connection.Open();
@@ -90,7 +104,7 @@ public class BookRepository
         Console.WriteLine("Enter from the list below the ID of the book to be UPDATED:\n");
 
         Read();
-        
+
         Console.WriteLine();
 
         Console.WriteLine("Enter book ID: ");
@@ -140,11 +154,23 @@ public class BookRepository
         _connection.Close();
     }
 
-    public List<Book> SortedBy()
+    public List<Book> SortedByPrice()
     {
+        int asc = 1;
+        string asc_desc = "asc";
+
+        asc = Convert.ToInt32(Console.ReadLine());
+
+        if (asc == 2)
+        {
+            asc_desc = "desc";
+        }
+
         _connection.Open();
-        string query = "SELECT * FROM bookinfo ORDER BY Price";
+        string query = $"SELECT * FROM bookinfo ORDER BY Price {asc_desc}";
+        //string query = "SELECT * FROM bookinfo ORDER BY Price asc";
         using MySqlCommand cmd = new MySqlCommand(query, _connection);
+        //cmd.Parameters.AddWithValue("@asc_desc", asc_desc);
         using MySqlDataReader reader = cmd.ExecuteReader();
         List<Book> books = new List<Book>();
         while (reader.Read())
@@ -164,8 +190,10 @@ public class BookRepository
         return books;
     }
 
-    public List<Book> SearchBooksBy(string authorName)
+    public List<Book> SearchBooksByAuthor()
     {
+        string authorName = Console.ReadLine();
+
         _connection.Open();
         string query = "SELECT * FROM bookinfo WHERE AuthorName LIKE @authorName";
         using MySqlCommand cmd = new MySqlCommand(query, _connection);
@@ -227,7 +255,7 @@ class Program
 
         while (optionMenu >= 1 && optionMenu <= 6)
         {
-            Console.WriteLine("\n1.Read\n2.Create\n3.Update\n4.Delete\n5.Select by publisher\n6.Sort by price\n");
+            Console.WriteLine("\n1.Read\n2.Create\n3.Update\n4.Delete\n5.Search by author\n6.Sort by price\n7.Filter by price\n");
             optionMenu = Convert.ToInt32(Console.ReadLine());
 
             switch (optionMenu)
@@ -245,11 +273,23 @@ class Program
                 case 4:
                     bookRepo.Delete();
                     break;
-                //case 5:
-                //    Console.WriteLine("Select by publisher");
-                //    ReadByPublisher();
-                //    break;
-                //case 6:
+                case 5:
+                    Console.WriteLine("\nSearch by author\n");
+                    List<Book> booksByAuthor = bookRepo.SearchBooksByAuthor();
+                    foreach (var book in booksByAuthor)
+                    {
+                        Console.WriteLine($"\"{book.Title}\" by {book.Author}");
+                    }
+                    break;
+                case 6:
+                    Console.WriteLine("Sort by price. Enter: 1 - Asc, 2 - Desc");
+                    List<Book> sortByTitle = bookRepo.SortedByPrice();
+                    foreach (var book in sortByTitle)
+                    {
+                        Console.WriteLine($"{book.Price}$ - \"{book.Title}\" by {book.Author}.");
+                    }
+                    break;
+                //case 7:
                 //    Console.WriteLine("Sort by price");
                 //    SortByPrice();
                 //    break;
@@ -260,43 +300,9 @@ class Program
 
         }
 
-        //bookRepo.Create();
-
-        //bookRepo.Update();
-
-        //bookRepo.Delete();
-
-        //{
-        //    Console.WriteLine($"\n\nThe list of books:\n");
-
-        //    //bookRepo.Read();
-        //    //}
 
 
-        //Console.WriteLine($"\n\nPrint the list of books:\n");
-
-        //List<Book> books = bookRepo.Read();
-        //foreach (var book in books)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}");
-        //}
-
-        //Console.WriteLine($"\n\nSearch:\n");
-
-
-        //List<Book> booksByAuthor = bookRepo.SearchBooksBy("Harper Lee");
-        //foreach (var book in booksByAuthor)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}");
-        //}
-
-        //Console.WriteLine($"\n\nSort:\n");
-
-        //List<Book> sortByTitle = bookRepo.SortedBy();
-        //foreach (var book in sortByTitle)
-        //{
-        //    Console.WriteLine($"{book.Title} by {book.Author}: {book.Price}$");
-        //}
+      
 
         //int byPrice = 11;
         //Console.WriteLine($"\n\nFilter by price: {byPrice}$\n");
