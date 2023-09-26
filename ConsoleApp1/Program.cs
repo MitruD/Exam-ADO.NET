@@ -255,7 +255,7 @@ class Program
 
         int optionMenu = 1;
 
-        while (optionMenu >= 1 && optionMenu <= 6)
+        while (optionMenu >= 1 && optionMenu <= 7)
         {
             Console.WriteLine("\n1.Read\n2.Create\n3.Update\n4.Delete\n5.Search by author\n6.Sort by price\n7.Filter: Price equal/lower than ...\n");
             optionMenu = Convert.ToInt32(Console.ReadLine());
@@ -303,7 +303,6 @@ class Program
                     Console.WriteLine("Close");
                     break;
             }
-
         }
     }
 }
